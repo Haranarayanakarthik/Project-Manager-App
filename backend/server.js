@@ -18,3 +18,7 @@ app.use("/api/tasks", require("./routes/task"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 
 app.listen(5000, () => console.log("Server running on 5000"));
+
+app.get("/", (req, res) => {
+  res.send("API is running 🚀");
+});
