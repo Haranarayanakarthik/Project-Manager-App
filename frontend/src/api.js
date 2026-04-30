@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://project-manager-app-wzvd.onrender.com/api",
+  baseURL: "https://project-manager-app-g9bc.onrender.com/api",
 });
 
 API.interceptors.request.use((req) => {
