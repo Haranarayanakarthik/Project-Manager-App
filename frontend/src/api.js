@@ -1,11 +1,11 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://project-manager-app-wzvd.onrender.com/api",
 });
 
 API.interceptors.request.use((req) => {
-  req.headers.authorization = localStorage.getItem("token");
+  req.headers.authorization = `Bearer ${localStorage.getItem("token")}`;
   return req;
 });
 
