@@ -29,7 +29,26 @@ router.post("/signup", async (req, res) => {
     res.json(user);
 
   } catch (err) {
-    console.log("Signup error:", err);   // 🔥 IMPORTANT
-    res.status(500).send(err.message);   // send real error
+    console.log("Signup error:", err);
+    res.status(500).send(err.message);
   }
 });
+
+// LOGIN (add this if not already)
+router.post("/login", async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(400).send("No user");
+
+  const valid = await bcrypt.compare(req.body.password, user.password);
+  if (!valid) return res.status(400).send("Wrong password");
+
+  const token = jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET
+  );
+
+  res.json({ token });
+});
+
+// ✅ THIS LINE IS CRITICAL
+module.exports = router;
