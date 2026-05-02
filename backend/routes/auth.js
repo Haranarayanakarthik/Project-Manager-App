@@ -8,8 +8,14 @@ router.post("/signup", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
+    if (!name || !email || !password) {
+      return res.status(400).send("Missing fields");
+    }
+
     const exists = await User.findOne({ email });
-    if (exists) return res.status(400).send("User already exists");
+    if (exists) {
+      return res.status(400).send("User already exists");
+    }
 
     const hash = await bcrypt.hash(password, 10);
 
@@ -17,29 +23,13 @@ router.post("/signup", async (req, res) => {
       name,
       email,
       password: hash,
-      role: role || "member",
+      role: role || "member"
     });
 
     res.json(user);
+
   } catch (err) {
-    res.status(500).send(err.message);
+    console.log("Signup error:", err);   // 🔥 IMPORTANT
+    res.status(500).send(err.message);   // send real error
   }
 });
-
-// LOGIN
-router.post("/login", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("No user");
-
-  const valid = await bcrypt.compare(req.body.password, user.password);
-  if (!valid) return res.status(400).send("Wrong password");
-
-  const token = jwt.sign(
-    { id: user._id, role: user.role },
-    process.env.JWT_SECRET,
-  );
-
-  res.json({ token });
-});
-
-module.exports = router;
